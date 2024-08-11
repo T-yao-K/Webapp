@@ -1,0 +1,27 @@
+.search-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .search-field {
+    margin-bottom: 20px;
+  }
+  
+  .keyword-field {
+    flex: 1 1 200px;
+  }
+  
+  .genre-field {
+    flex: 1 1 200px;
+  }
+  
+  .order-field {
+    flex: 1 1 200px;
+  }
+  
+  .search-button {
+    flex: 0 1 auto;
+  }
