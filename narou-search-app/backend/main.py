@@ -71,6 +71,41 @@ async def get_genres():
     }
     return genres
 
+@app.get("/quiz")
+async def get_quiz():
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        try:
+            # 3つのランダムな小説を取得
+            response = await client.get(NAROU_API_ENDPOINT, params={
+                "out": "json",
+                "lim": 3,
+                "order": "random"
+            })
+            response.raise_for_status()
+            data = response.json()
+
+            if len(data) < 4:  # 最初の要素はメタデータなので、4未満ならエラー
+                return {"error": "十分な小説データを取得できませんでした"}
+
+            novels = data[1:]  # メタデータを除外
+            correct_novel = random.choice(novels)
+            
+            return {
+                "question": correct_novel["story"],
+                "options": [
+                    {"title": novel["title"], "ncode": novel["ncode"]}
+                    for novel in novels
+                ],
+                "correct_ncode": correct_novel["ncode"]
+            }
+
+        except httpx.TimeoutException:
+            return {"error": "API request timed out"}
+        except httpx.HTTPStatusError as e:
+            return {"error": f"HTTP error occurred: {e}"}
+        except Exception as e:
+            return {"error": f"An unexpected error occurred: {str(e)}"}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
