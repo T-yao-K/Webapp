@@ -9,7 +9,7 @@ React,FastAPI,Dockerを用いて実装しています。
 * Docker: バックエンドは python:3.12、フロントエンドは node:22.4.1 ベースイメージを使用  
 
 ## 起動方法  
-クローンして以下のコマンドの実行  
+クローンし、narou-search-appのディレクトリに移動して以下のコマンドの実行  
 ~~~
 docker-compose down
 docker-compose build --no-cache
