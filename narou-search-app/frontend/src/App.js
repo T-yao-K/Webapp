@@ -4,6 +4,8 @@ import SearchForm from './components/SearchForm';
 import SearchResults from './components/SearchResults';
 import Quiz from './components/Quiz'; // クイズコンポーネントをインポート
 import Alert from '@mui/material/Alert'; // 修正: @mui/materialからインポート
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import './App.css';
 
 const App = () => {

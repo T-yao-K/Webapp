@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
+import random
 
 app = FastAPI()
 
@@ -13,6 +14,11 @@ app.add_middleware(
 )
 
 NAROU_API_ENDPOINT = "https://api.syosetu.com/novelapi/api/"
+
+GENRES = [
+    "101", "102", "201", "202", "301", "302", "303", "304", "305", "306", "307",
+    "401", "402", "403", "404", "9901", "9902", "9903", "9904", "9999", "9801"
+]
 
 @app.get("/search")
 async def search_novels(
@@ -73,30 +79,40 @@ async def get_genres():
 
 @app.get("/quiz")
 async def get_quiz():
+    genres = await get_genres()
     async with httpx.AsyncClient(timeout=30.0) as client:
         try:
-            # 3つのランダムな小説を取得
+            # ランダムにジャンルを選択
+            selected_genre = random.choice(GENRES)
+            
+            # 選択したジャンルの小説を取得（例えば20個）
             response = await client.get(NAROU_API_ENDPOINT, params={
                 "out": "json",
-                "lim": 3,
-                "order": "random"
+                "lim": 20,
+                "order": "random",
+                "genre": selected_genre
             })
             response.raise_for_status()
             data = response.json()
 
-            if len(data) < 4:  # 最初の要素はメタデータなので、4未満ならエラー
+            if len(data) < 21:  # 最初の要素はメタデータなので、21未満ならエラー
                 return {"error": "十分な小説データを取得できませんでした"}
 
             novels = data[1:]  # メタデータを除外
-            correct_novel = random.choice(novels)
             
+            # 全ての小説データを返す
             return {
-                "question": correct_novel["story"],
-                "options": [
-                    {"title": novel["title"], "ncode": novel["ncode"]}
+                "novels": [
+                    {
+                        "title": novel["title"],
+                        "ncode": novel["ncode"],
+                        "story": novel["story"],
+                        "url": f"https://ncode.syosetu.com/{novel['ncode']}/"
+                    }
                     for novel in novels
                 ],
-                "correct_ncode": correct_novel["ncode"]
+                "genre": selected_genre,
+                "genre_name": genres[selected_genre]
             }
 
         except httpx.TimeoutException:
