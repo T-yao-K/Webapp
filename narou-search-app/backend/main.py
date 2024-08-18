@@ -20,6 +20,9 @@ GENRES = [
     "401", "402", "403", "404", "9901", "9902", "9903", "9904", "9999", "9801"
 ]
 
+def to_lowercase(input_string: str) -> str:
+    return input_string.lower()
+
 @app.get("/search")
 async def search_novels(
     keyword: str,
@@ -107,7 +110,7 @@ async def get_quiz():
                         "title": novel["title"],
                         "ncode": novel["ncode"],
                         "story": novel["story"],
-                        "url": f"https://ncode.syosetu.com/{novel['ncode']}/"
+                        "url": f"https://ncode.syosetu.com/{to_lowercase(novel['ncode'])}/"
                     }
                     for novel in novels
                 ],
