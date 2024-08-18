@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm install
-RUN npm install @material-ui/lab
+RUN npm install @mui/lab
 RUN npm install @mui/icons-material
 RUN npm install @mui/material
 
